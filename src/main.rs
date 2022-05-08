@@ -1,7 +1,6 @@
 #![windows_subsystem = "windows"]
 #![allow(non_snake_case, unused)]
-// vim:foldmethod=marker
-//{{{
+
 use raylib::prelude::*;
 use vtubestudio::{Client, Error};
 use vtubestudio::data::ParameterCreationRequest;
@@ -12,14 +11,14 @@ use std::fs::File;
 use std::io::prelude::*;
 use once_cell::sync::OnceCell;
 use serde::Serialize;
-//}}}
+
 
 #[tokio::main]
 async fn main() -> Result<(), Error> {
 	let C_VER = env!("CARGO_PKG_VERSION");
 	let C_NAME = env!("CARGO_PKG_NAME");
 	let C_AUTHOR = env!("CARGO_PKG_AUTHORS");
-	let funny_cr = "(c) 2022 Nyarusoft";
+	let funny_cr = "Orginal Code by Maruseu (@nyaruseu). Fork by Eightyuser";
 	let connVTS = true;
 
 	let mut smooth = 0.0;
@@ -27,7 +26,6 @@ async fn main() -> Result<(), Error> {
 	let (mut shoulderLDown,mut shoulderRDown) = (0.0,0.0);
 	let (mut thumbLStick,mut thumbRStick) = (0.0,0.0);
 
-//Connecting{{{
 
     let tokenPath = "./token";
 
@@ -58,9 +56,9 @@ async fn main() -> Result<(), Error> {
 
         }
     });
-//}}}
 
-//Create Parameters{{{
+
+	//Create Parameters{{{
     if connVTS {
         let resp = client.send(&ParameterCreationRequest {
             parameter_name: "NP_ON".to_string(), 
@@ -196,59 +194,27 @@ async fn main() -> Result<(), Error> {
             default_value: 0.0
         }).await?;
     }
-//}}}
 
-//Raylib Init{{{
+
+	//Raylib Init
 	let width = 400;
 	let height = 300;
 	let(mut rl, thread) = raylib::init()
 		.size(width, height)
-		.title(&format!("Nyarupad {}", C_VER))
+		.title(&format!("WankoPaws {}", C_VER))
 		.build();
 	if !connVTS {rl.set_target_fps(30)}
-//}}}
 
-// Load images{{{
-	// let i_Wicon = Image::load_image("res/icon.png").expect("couldnt load icon image");
-	// rl.set_window_icon(i_Wicon);
-	// let i_C = Image::load_image("res/C.png").expect("couldnt load C image");
-	// let t_C = rl.load_texture_from_image(&thread, &i_C).expect("couldnt load C Texture");
-	// let i_DP = Image::load_image("res/DP.png").expect("couldnt load DP image");
-	// let t_DP = rl.load_texture_from_image(&thread, &i_DP).expect("couldnt load DP Texture");
-	// let i_DPB = Image::load_image("res/DPB.png").expect("couldnt load DPB image");
-	// let t_DPB = rl.load_texture_from_image(&thread, &i_DPB).expect("couldnt load DPB Texture");
-	// let i_FB = Image::load_image("res/FB.png").expect("couldnt load FB image");
-	// let t_FB = rl.load_texture_from_image(&thread, &i_FB).expect("couldnt load FB Texture");
-	// let i_FBB = Image::load_image("res/FBB.png").expect("couldnt load FBB image");
-	// let t_FBB = rl.load_texture_from_image(&thread, &i_FBB).expect("couldnt load FBB Texture");
-	// let i_LB = Image::load_image("res/LB.png").expect("couldnt load LB image");
-	// let t_LB = rl.load_texture_from_image(&thread, &i_LB).expect("couldnt load LB Texture");
-	// let i_Lind = Image::load_image("res/Lind.png").expect("couldnt load Lind image");
-	// let t_Lind = rl.load_texture_from_image(&thread, &i_Lind).expect("couldnt load Lind Texture");
-	// let i_LT = Image::load_image("res/LT.png").expect("couldnt load LT image");
-	// let t_LT = rl.load_texture_from_image(&thread, &i_LT).expect("couldnt load LT Texture");
-	// let i_LTH = Image::load_image("res/LTH.png").expect("couldnt load LTH image");
-	// let t_LTH = rl.load_texture_from_image(&thread, &i_LTH).expect("couldnt load LTH Texture");
-	// let i_RB = Image::load_image("res/RB.png").expect("couldnt load RB image");
-	// let t_RB = rl.load_texture_from_image(&thread, &i_RB).expect("couldnt load RB Texture");
-	// let i_Rind = Image::load_image("res/Rind.png").expect("couldnt load Rind image");
-	// let t_Rind = rl.load_texture_from_image(&thread, &i_Rind).expect("couldnt load Rind Texture");
-	// let i_RT = Image::load_image("res/RT.png").expect("couldnt load RT image");
-	// let t_RT = rl.load_texture_from_image(&thread, &i_RT).expect("couldnt load RT Texture");
-	// let i_RTH = Image::load_image("res/RTH.png").expect("couldnt load RTH image");
-	// let t_RTH = rl.load_texture_from_image(&thread, &i_RTH).expect("couldnt load RTH Texture");
-	// let i_SL = Image::load_image("res/SL.png").expect("couldnt load SL image");
-	// let t_SL = rl.load_texture_from_image(&thread, &i_SL).expect("couldnt load SL Texture");
-	// let i_SR = Image::load_image("res/SR.png").expect("couldnt load SR image");
-	// let t_SR = rl.load_texture_from_image(&thread, &i_SR).expect("couldnt load SR Texture");
-//}}}
+
+	//Load icon
+	let i_Wicon = Image::load_image("res/icon.png").expect("couldnt load icon image");
+	rl.set_window_icon(i_Wicon);
+
 
 	while !rl.window_should_close(){
 		smooth = 0.1 / rl.get_frame_time();
 
-// Face Button Down{{{
-
-		// FORK
+		// Fork
 		let mut rfButtDownY = 0;
 		let mut rfButtDownX = 0;
 		if rl.is_gamepad_button_down(0,GamepadButton::GAMEPAD_BUTTON_RIGHT_FACE_UP) { rfButtDownY=-1;}
@@ -268,19 +234,19 @@ async fn main() -> Result<(), Error> {
 		if rl.is_gamepad_button_down(0,GamepadButton::GAMEPAD_BUTTON_LEFT_FACE_DOWN) { lfButtDownY=-1;}
 		if rl.is_gamepad_button_down(0,GamepadButton::GAMEPAD_BUTTON_LEFT_FACE_LEFT) { lfButtDownX=-1;}
 		if rl.is_gamepad_button_down(0,GamepadButton::GAMEPAD_BUTTON_LEFT_FACE_RIGHT) { lfButtDownX=1;}
-//}}}
 
-// Stick Axis{{{
+
+	//	Stick Axis
 	let lAxisX = rl.get_gamepad_axis_movement(0,GamepadAxis::GAMEPAD_AXIS_LEFT_X);
 	let lAxisY = rl.get_gamepad_axis_movement(0,GamepadAxis::GAMEPAD_AXIS_LEFT_Y)*-1.0;
 	if lAxisX>0.1||lAxisY>0.1||lAxisX < -0.1 || lAxisY < -0.1 {thumbLStick = 1.0;}
 	let rAxisX = rl.get_gamepad_axis_movement(0,GamepadAxis::GAMEPAD_AXIS_RIGHT_X);
 	let rAxisY = rl.get_gamepad_axis_movement(0,GamepadAxis::GAMEPAD_AXIS_RIGHT_Y)*-1.0;
 	if rAxisX>0.1||rAxisY>0.1||rAxisX < -0.1 || rAxisY < -0.1 {thumbRStick = 1.0;}
-//}}}
 
 
-// Face Button Pressed{{{
+
+	//Face Button Pressed
 		rfButtPress += -rfButtPress/smooth;
 		lfButtPress += -lfButtPress/smooth;
 		if rl.is_gamepad_button_pressed(0,GamepadButton::GAMEPAD_BUTTON_RIGHT_FACE_UP) ||
@@ -300,11 +266,11 @@ async fn main() -> Result<(), Error> {
            rl.is_gamepad_button_pressed(0,GamepadButton::GAMEPAD_BUTTON_LEFT_FACE_RIGHT) ||
            rl.is_gamepad_button_pressed(0,GamepadButton::GAMEPAD_BUTTON_MIDDLE_LEFT) ||
            rl.is_gamepad_button_pressed(0,GamepadButton::GAMEPAD_BUTTON_LEFT_THUMB) { lfButtPress=1.0; thumbLStick = 0.0;}
-//}}}
+
 
 
 		
-// Shoulder Buttons{{{
+	// Shoulder Buttons
 		let mut lAxisT = rl.get_gamepad_axis_movement(0,GamepadAxis::GAMEPAD_AXIS_LEFT_TRIGGER);
 		let mut rAxisT = rl.get_gamepad_axis_movement(0,GamepadAxis::GAMEPAD_AXIS_RIGHT_TRIGGER);
 		
@@ -326,32 +292,32 @@ async fn main() -> Result<(), Error> {
 		rAxisT = rAxisT/2.0+0.5;
 
 
-//}}}
 
-// Draw UI/Preview{{{
+
+		// Draw UI/Preview{{{
 
 		let current_fps = rl.get_fps();
 		let mut d = rl.begin_drawing(&thread);
 		d.clear_background(Color::WHITE);
-// FORK
+		// FORK
 		d.draw_text(&format!(
-"FPS: {}
+			"FPS: {}
 
-PARAMETERS
-RStickX: {:.2}
-RStickY: {:.2}
-ROnStick: {:.2}
-LStickX: {:.2}
-LStickY: {:.2}
-LOnStick: {:.2}
-RButtonDownX: {}
-RButtonDownY: {}
-LButtonDownX: {}
-LButtonDownY: {}
-RButtonPressed: {:.2}
-LButtonPressed: {:.2}
-RIndexDown: {}
-LIndexDown: {}"
+			PARAMETERS
+			RStickX: {:.2}
+			RStickY: {:.2}
+			ROnStick: {:.2}
+			LStickX: {:.2}
+			LStickY: {:.2}
+			LOnStick: {:.2}
+			RButtonDownX: {}
+			RButtonDownY: {}
+			LButtonDownX: {}
+			LButtonDownY: {}
+			RButtonPressed: {:.2}
+			LButtonPressed: {:.2}
+			RIndexDown: {}
+			LIndexDown: {}"
 			, current_fps
 			, rAxisX
 			, rAxisY
@@ -372,24 +338,9 @@ LIndexDown: {}"
 			, shoulderRDown
 			, shoulderLDown
 		), 5, 5, 10, Color::BLACK);
-	//d.draw_texture(&t_RT,150,50 + (rAxisT*8.0) as i32,Color{r:(255.0*(1.0 - rAxisT)) as u8,g:(255.0*(1.0 - rAxisT)) as u8,b:(255.0*(1.0 - rAxisT)) as u8,a:255});
-	//d.draw_texture(&t_LT,150,50 + (lAxisT*8.0) as i32,Color{r:(255.0*(1.0 - lAxisT)) as u8,g:(255.0*(1.0 - lAxisT)) as u8,b:(255.0*(1.0 - lAxisT)) as u8,a:255});
-	//d.draw_texture(&t_LB,150,50 + if triggerL1 {2} else {0},if triggerL1 {Color::GRAY} else {Color::WHITE});
-	//d.draw_texture(&t_RB,150,50 + if triggerR1 {2} else {0},if triggerR1 {Color::GRAY} else {Color::WHITE});
-	// d.draw_texture(&t_C,150,50,Color::WHITE);
-	// d.draw_texture(&t_DPB,150,50,Color{r:(255.0*(1.0 - lfButtPress)) as u8,g:(255.0*(1.0 - lfButtPress)) as u8,b:(255.0*(1.0 - lfButtPress)) as u8,a:255});
-	// d.draw_texture(&t_DP,150,50,Color{r:(255.0/4.0*(4.0 - lfButtDown as f32)) as u8,g:(255.0/4.0*(4.0 - lfButtDown as f32)) as u8,b:(255.0/4.0*(4.0 - lfButtDown as f32)) as u8,a:255});
-	// d.draw_texture(&t_FBB,150,50,Color{r:(255.0*(1.0 - rfButtPress)) as u8,g:(255.0*(1.0 - rfButtPress)) as u8,b:(255.0*(1.0 - rfButtPress)) as u8,a:255});
-	// d.draw_texture(&t_FB,150,50,Color{r:(255.0/4.0*(4.0 - rfButtDownY as f32)) as u8,g:(255.0/4.0*(4.0 - rfButtDownY as f32)) as u8,b:(255.0/4.0*(4.0 - rfButtDownY as f32)) as u8,a:255});
-	// d.draw_texture(&t_SL,150 + (lAxisX*5.0) as i32,50 + (lAxisY * -1.0 *5.0) as i32,Color::WHITE);
-	// d.draw_texture(&t_SR,150 + (rAxisX*5.0) as i32,50 + (rAxisY * -1.0 *5.0) as i32,Color::WHITE);
-	// d.draw_texture(&t_Lind,150,50 + 10 * (1 - shoulderLDown as i32),Color::WHITE);
-	// d.draw_texture(&t_Rind,150,50 + 10 * (1 - shoulderRDown as i32),Color::WHITE);
-	// d.draw_texture(&t_LTH,150 + 28 * (1 - thumbLStick as i32),50 + 28 * (1 - thumbLStick as i32),Color::WHITE);
-	// d.draw_texture(&t_RTH,150 - 28 * thumbRStick as i32,50 + 28 * thumbRStick as i32,Color::WHITE);
 
 	d.draw_text(funny_cr,width - text::measure_text(funny_cr, 10) - 5, height - 10 - 5, 10, Color::BLACK); 
-//}}}
+
 
 // Update Parameters{{{
         if connVTS {
@@ -441,22 +392,18 @@ LIndexDown: {}"
 		    		weight: Some(1.0),
 		        }, ParameterValue{
 		    		id: "NP_L1".to_string(),
-		    		//value: if triggerL1 {1.0} else {0.0},
 					value: rfButtDownX as f64,
 		    		weight: Some(1.0),
 		        }, ParameterValue{
 		    		id: "NP_L2".to_string(),
-		    		//value: lAxisT as f64,
 					value: rfButtDownX as f64,
 		    		weight: Some(1.0),
 		        }, ParameterValue{
 		    		id: "NP_R1".to_string(),
-		    		//value: if triggerR1 {1.0} else {0.0},
 					value: rfButtDownY as f64,
 		    		weight: Some(1.0),
 		        }, ParameterValue{
 		    		id: "NP_R2".to_string(),
-		    		//value: rAxisT as f64,
 					value: rfButtDownY as f64,
 		    		weight: Some(1.0),
 		        }, ParameterValue{
@@ -478,7 +425,7 @@ LIndexDown: {}"
 		    	}],
 		    }).await?;
         }
-//}}}
+
 	}
 
     Ok(())

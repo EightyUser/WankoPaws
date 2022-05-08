@@ -1,8 +1,8 @@
 [package]
-name = "Nyarupad-VTS - Wanko Version"
-version = "0.1.1"
-edition = "2022"
-authors = ["Origianl by Maruseu (@nyaruseu)  Custom fork for WankoSOBA model by EightyUser"]
+name = "WankoPaws"
+version = "0.1.0"
+edition = "2021"
+authors = [" Orginal Code by Maruseu (@nyaruseu). Fork by Eightyuser"]
 [dependencies]
 anyhow = "1.0.47"
 directories = "4.0.1"
